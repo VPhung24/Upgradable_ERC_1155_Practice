@@ -9,6 +9,7 @@ contract SnovvUpgradableTokenTest is Test {
 
     function setUp() public {
         token = new SnovvUpgradableToken(address(this));
+        
     }
 
     function testURI() public {

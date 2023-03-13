@@ -21,16 +21,11 @@ contract SnovvUpgradableToken is
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     modifier onlyTrustedForwarder() {
-        require(
-            isTrustedForwarder(msg.sender),
-            "Only callable by Trusted Forwarder"
-        );
+        require(isTrustedForwarder(msg.sender), "Only callable by Trusted Forwarder");
         _;
     }
 
-    constructor(
-        address trustedForwarder
-    ) ERC2771ContextUpgradeable(trustedForwarder) {
+    constructor(address trustedForwarder) ERC2771ContextUpgradeable(trustedForwarder) {
         _disableInitializers();
     }
 
@@ -58,21 +53,19 @@ contract SnovvUpgradableToken is
         _unpause();
     }
 
-    function mint(
-        address account,
-        uint256 id,
-        uint256 amount,
-        bytes memory data
-    ) public onlyRole(MINTER_ROLE) onlyTrustedForwarder {
+    function mint(address account, uint256 id, uint256 amount, bytes memory data)
+        public
+        onlyRole(MINTER_ROLE)
+        onlyTrustedForwarder
+    {
         _mint(account, id, amount, data);
     }
 
-    function mintBatch(
-        address to,
-        uint256[] memory ids,
-        uint256[] memory amounts,
-        bytes memory data
-    ) public onlyRole(MINTER_ROLE) onlyTrustedForwarder {
+    function mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data)
+        public
+        onlyRole(MINTER_ROLE)
+        onlyTrustedForwarder
+    {
         _mintBatch(to, ids, amounts, data);
     }
 
@@ -83,24 +76,31 @@ contract SnovvUpgradableToken is
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    )
-        internal
-        override(ERC1155Upgradeable, ERC1155SupplyUpgradeable)
-        whenNotPaused
-    {
+    ) internal override(ERC1155Upgradeable, ERC1155SupplyUpgradeable) whenNotPaused {
         super._beforeTokenTransfer(operator, from, to, ids, amounts, data);
     }
 
-    function grantRolePublic(
-        bytes32 role,
-        address account
-    ) public onlyRole(DEFAULT_ADMIN_ROLE) {
+    function transfer(address to, uint256 amount) public onlyRole(DEFAULT_ADMIN_ROLE) returns (bool) {
+        super.safeTransferFrom(msg.sender, to, 0, amount, "");
+
+        return super.balanceOf(to, amount) >= amount;
+    }
+
+    function transferFrom(address from, address to, uint256 amount)
+        public
+        onlyRole(DEFAULT_ADMIN_ROLE)
+        returns (bool)
+    {
+        super.safeTransferFrom(from, to, 0, amount, "");
+
+        return super.balanceOf(to, amount) >= amount;
+    }
+
+    function grantRolePublic(bytes32 role, address account) public onlyRole(DEFAULT_ADMIN_ROLE) {
         super.grantRole(role, account);
     }
 
-    function supportsInterface(
-        bytes4 interfaceId
-    )
+    function supportsInterface(bytes4 interfaceId)
         public
         view
         override(ERC1155Upgradeable, AccessControlUpgradeable)
@@ -109,12 +109,7 @@ contract SnovvUpgradableToken is
         return super.supportsInterface(interfaceId);
     }
 
-    function _msgSender()
-        internal
-        view
-        override(ContextUpgradeable, ERC2771ContextUpgradeable)
-        returns (address)
-    {
+    function _msgSender() internal view override(ContextUpgradeable, ERC2771ContextUpgradeable) returns (address) {
         return ERC2771ContextUpgradeable._msgSender();
     }
 

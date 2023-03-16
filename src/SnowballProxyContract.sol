@@ -1,14 +1,12 @@
-// SPDX-License-Identifier: UNLICENSED
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.13;
 
-contract SnowballProxyContract {
-    uint256 public number;
+import {TransparentUpgradeableProxy} from
+    "openzeppelin-contracts/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
 
-    function setNumber(uint256 newNumber) public {
-        number = newNumber;
-    }
-
-    function increment() public {
-        number++;
-    }
+contract SnowballProxyContract is TransparentUpgradeableProxy {
+    constructor(address _logic, address admin_, bytes memory _data)
+        payable
+        TransparentUpgradeableProxy(_logic, admin_, _data)
+    {}
 }

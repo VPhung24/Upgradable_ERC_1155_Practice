@@ -8,10 +8,6 @@ contract SnowballProxyContractTest is Test {
     SnowballProxyContract public proxyContract;
 
     function setUp() public {
-        proxyContract = new  SnowballProxyContract();
-    }
-
-    function testSetNumber() public {
-        proxyContract.setNumber(10);
+        proxyContract = new SnowballProxyContract(address(this), address(this), "");
     }
 }

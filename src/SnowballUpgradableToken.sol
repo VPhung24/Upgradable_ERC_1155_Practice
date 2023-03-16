@@ -40,7 +40,7 @@ contract SnowballUpgradableToken is
         _setURI(newuri);
     }
 
-    function uri(uint256 id) public view override returns (string memory) {
+    function uri(uint256 id) public view override onlyRole(URI_SETTER_ROLE) returns (string memory) {
         return
             string(abi.encodePacked("https://uri.viviantoken.com/", abi.encodePacked(Strings.toHexString(id), ".json")));
     }
@@ -64,11 +64,15 @@ contract SnowballUpgradableToken is
         _mintBatch(to, ids, amounts, data);
     }
 
-    function grantRole(bytes32 role, address account) public virtual override onlyRole(DEFAULT_ADMIN_ROLE) {
+    function grantRole(bytes32 role, address account) public virtual override {
+        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "Caller is not an admin");
         _grantRole(role, account);
     }
 
     function hasRole(bytes32 role, address account) public view virtual override returns (bool) {
+        if (role == DEFAULT_ADMIN_ROLE) {
+            return hasRole(DEFAULT_ADMIN_ROLE, account);
+        }
         return super.hasRole(role, account);
     }
 

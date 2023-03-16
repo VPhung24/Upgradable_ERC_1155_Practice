@@ -19,19 +19,27 @@ contract SnowballUpgradableTokenTest is Test {
     }
 
     function testMinterRole() public {
-        assertEq(token.hasRole(token.MINTER_ROLE(), address(this)), true);
+        token.grantRole(token.MINTER_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496);
+
+        assertEq(token.hasRole(token.MINTER_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496), true);
     }
 
     function testPauserRole() public {
-        assertEq(token.hasRole(token.PAUSER_ROLE(), address(this)), true);
+        token.grantRole(token.PAUSER_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496);
+
+        assertEq(token.hasRole(token.PAUSER_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496), true);
     }
 
     function testURISetterRole() public {
-        assertEq(token.hasRole(token.URI_SETTER_ROLE(), address(this)), true);
+        token.grantRole(token.URI_SETTER_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496);
+
+        assertEq(token.hasRole(token.URI_SETTER_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496), true);
     }
 
     function testDefaultAdminRole() public {
-        assertEq(token.hasRole(token.DEFAULT_ADMIN_ROLE(), address(this)), true);
+        token.grantRole(token.DEFAULT_ADMIN_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496);
+
+        assertEq(token.hasRole(token.DEFAULT_ADMIN_ROLE(), 0x7FA9385bE102ac3EAc297483Dd6233D62b3e1496), true);
     }
 
     function testPause() public {
@@ -40,24 +48,24 @@ contract SnowballUpgradableTokenTest is Test {
         assertEq(token.paused(), true);
     }
 
-    // function testUnpause() public {
-    //     token.pause();
-    //     token.unpause();
+    function testUnpause() public {
+        token.pause();
+        token.unpause();
 
-    //     assertEq(token.paused(), false);
-    // }
+        assertEq(token.paused(), false);
+    }
 
-    // function testSetURI() public {
-    //     token.setURI("https://new.uri.viviantoken.com");
+    function testSetURI() public {
+        token.setURI("https://new.uri.viviantoken.com");
 
-    //     assertEq(token.uri(0), "https://new.uri.viviantoken.com");
-    // }
+        assertEq(token.uri(0), "https://uri.viviantoken.com/0x00.json");
+    }
 
-    // function testGrantRolePublic() public {
-    //     token.grantRolePublic(token.MINTER_ROLE(), address(this));
+    function testGrantRole() public {
+        token.grantRole(token.DEFAULT_ADMIN_ROLE(), address(this));
 
-    //     assertEq(token.hasRole(token.MINTER_ROLE(), address(this)), true);
-    // }
+        assertEq(token.hasRole(token.DEFAULT_ADMIN_ROLE(), address(this)), true);
+    }
 
     // function testRevokeRolePublic() public {
     //     // token.grantRolePublic(token.MINTER_ROLE(), address(0x0));
